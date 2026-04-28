@@ -1,0 +1,231 @@
+import React, { useState, useEffect } from 'react';
+import { Plus, Move, CheckCircle2, X } from 'lucide-react';
+import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
+
+// RADIX PRIMITIVES
+import * as Toast from '@radix-ui/react-toast';
+import * as Dialog from '@radix-ui/react-dialog';
+
+export default function Record() {
+  const [formData, setFormData] = useState({
+    text: '',
+    amount: '',
+    categoryId: '',
+    type: 'EXPENSE',
+    note: ''
+  });
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [newCatName, setNewCatName] = useState('');
+
+  // RADIX STATES
+  const [toastOpen, setToastOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const token = localStorage.getItem('token');
+
+  const fetchCategories = async () => {
+    const res = await fetch(`/api/categories?type=${formData.type}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) setAvailableCategories(await res.json());
+  };
+
+  useEffect(() => { fetchCategories(); }, [formData.type]);
+
+  const handleDragEnd = (event) => {
+    if (event.over) {
+      const overId = event.over.id.toString();
+      // Toggle logic: If dragging onto the already selected category, deselect it
+      setFormData(prev => ({
+        ...prev,
+        categoryId: prev.categoryId === overId ? '' : overId
+      }));
+    }
+  };
+
+  const handleAddCategory = async () => {
+    if (!newCatName) return;
+    const res = await fetch('/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ name: newCatName, type: formData.type }),
+    });
+    if (res.ok) {
+      await fetchCategories();
+      setNewCatName('');
+      setDialogOpen(false);
+      // Fixed: We don't automatically change the categoryId here anymore 
+      // so your existing selection stays active.
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.categoryId) return;
+    const finalAmount = formData.type === 'EXPENSE' ? -Math.abs(formData.amount) : Math.abs(formData.amount);
+
+    const res = await fetch('/api/transactions/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ ...formData, amount: finalAmount, date: new Date().toISOString().split('T')[0] }),
+    });
+
+    if (res.ok) {
+      setToastOpen(true);
+      setFormData({ text: '', amount: '', categoryId: '', type: formData.type, note: '' });
+    }
+  };
+
+  return (
+    <Toast.Provider swipeDirection="right">
+      <div className="max-w-4xl mx-auto p-10 font-sans">
+        <DndContext onDragEnd={handleDragEnd}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {/* 1. INPUTS SIDE */}
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl border border-gray-100 space-y-6 h-fit">
+              <h2 className="text-2xl font-black text-gray-800 tracking-tight">1. DETAILS</h2>
+
+              {/* Updated Toggle: Centered and Larger */}
+              <div className="flex gap-2 p-2 bg-gray-100 rounded-2xl w-full">
+                {['EXPENSE', 'INCOME'].map(t => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, type: t, categoryId: '' })}
+                    className={`flex-1 py-3 rounded-xl font-black text-sm tracking-widest transition-all ${formData.type === t
+                        ? 'bg-white shadow-md text-blue-600 scale-[1.02]'
+                        : 'text-gray-400 hover:text-gray-600'
+                      }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                <input type="number" placeholder="0.00" value={formData.amount}
+                  onChange={e => setFormData({ ...formData, amount: e.target.value })}
+                  className="w-full text-5xl font-black outline-none placeholder:text-gray-100 focus:text-blue-600 transition-colors"
+                />
+                <input placeholder="What is this for?" value={formData.text}
+                  onChange={e => setFormData({ ...formData, text: e.target.value })}
+                  className="w-full p-4 bg-gray-50 rounded-2xl outline-none border-none font-bold text-gray-700"
+                />
+              </div>
+
+              <DraggableTransaction text={formData.text} amount={formData.amount} type={formData.type} />
+
+              {/* NOTE FIELD ADDED BACK */}
+              <textarea
+                placeholder="Add a note..."
+                className="w-full p-4 bg-gray-50 rounded-2xl h-24 outline-none text-sm border-none resize-none font-medium text-gray-600"
+                value={formData.note}
+                onChange={e => setFormData({ ...formData, note: e.target.value })}
+              />
+
+              <button onClick={handleSubmit} disabled={!formData.categoryId}
+                className={`w-full py-5 rounded-2xl font-black text-white transition-all transform active:scale-95 ${!formData.categoryId ? 'bg-gray-200' : formData.type === 'EXPENSE' ? 'bg-red-500 shadow-red-100 shadow-xl' : 'bg-green-500 shadow-green-100 shadow-xl'
+                  }`}>
+                CONFIRM & SAVE
+              </button>
+            </div>
+
+            {/* 2. CATEGORY SIDE */}
+            <div className="space-y-6">
+              <div className="flex justify-between items-center px-2">
+                <h2 className="text-2xl font-black text-gray-800 tracking-tight">2. CATEGORY</h2>
+
+                <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <Dialog.Trigger asChild>
+                    <button className="bg-blue-50 text-blue-600 p-3 rounded-2xl hover:bg-blue-100 active:scale-90 transition-all"><Plus size={20} /></button>
+                  </Dialog.Trigger>
+                  <Dialog.Portal>
+                    <Dialog.Overlay className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]" />
+                    <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-[3rem] shadow-2xl w-96 z-[101] outline-none">
+                      <Dialog.Title className="text-2xl font-black mb-6 uppercase tracking-tighter">New Group</Dialog.Title>
+                      <input autoFocus placeholder="Name..." value={newCatName} onChange={e => setNewCatName(e.target.value)}
+                        className="w-full p-5 bg-gray-50 rounded-2xl mb-8 outline-none font-bold text-lg"
+                      />
+                      <div className="flex gap-4">
+                        <Dialog.Close className="flex-1 font-bold text-gray-300">Cancel</Dialog.Close>
+                        <button onClick={handleAddCategory} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black">CREATE</button>
+                      </div>
+                    </Dialog.Content>
+                  </Dialog.Portal>
+                </Dialog.Root>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {availableCategories.map(cat => (
+                  <CategoryPad
+                    key={cat.id}
+                    cat={cat}
+                    // Toggle onClick logic
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      categoryId: prev.categoryId == cat.id ? '' : cat.id.toString()
+                    }))}
+                    isSelected={formData.categoryId == cat.id}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </DndContext>
+
+        {/* TOAST SYSTEM */}
+        <Toast.Root open={toastOpen} onOpenChange={setToastOpen} className="bg-white border border-gray-100 rounded-3xl shadow-2xl p-5 flex items-center gap-4 animate-slide-in">
+          <div className="bg-green-500 text-white p-2 rounded-full"><CheckCircle2 size={20} /></div>
+          <div className="flex-1">
+            <Toast.Title className="font-black text-gray-900 text-sm">SUCCESS</Toast.Title>
+            <Toast.Description className="text-gray-400 text-[10px] font-bold uppercase">Record Added</Toast.Description>
+          </div>
+          <Toast.Close className="text-gray-300 hover:text-gray-600"><X size={18} /></Toast.Close>
+        </Toast.Root>
+        <Toast.Viewport className="fixed bottom-0 right-0 p-6 flex flex-col gap-2 w-96 max-w-[100vw] z-[200] outline-none" />
+      </div>
+    </Toast.Provider>
+  );
+}
+
+// --- Draggable Transaction Stamp ---
+function DraggableTransaction({ text, amount, type }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: 'active-transaction' });
+  const style = { transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.5 : 1 };
+
+  return (
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes}
+      className={`p-6 rounded-[2rem] border-2 border-dashed cursor-grab active:cursor-grabbing transition-all ${type === 'EXPENSE' ? 'border-red-100 bg-red-50/50' : 'border-green-100 bg-green-50/50'
+        } ${isDragging ? 'shadow-2xl scale-105 z-50 bg-white border-blue-400 ring-4 ring-blue-500/10' : 'shadow-sm'}`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Stamp</span>
+        <Move size={14} className="text-gray-300" />
+      </div>
+      <p className="text-xl font-bold text-gray-800 truncate">{text || "New Entry"}</p>
+      <p className={`text-3xl font-black ${type === 'EXPENSE' ? 'text-red-600' : 'text-green-600'}`}>
+        ${amount || "0.00"}
+      </p>
+    </div>
+  );
+}
+
+// --- Droppable Category Pad ---
+function CategoryPad({ cat, isSelected, onClick }) {
+  const { isOver, setNodeRef } = useDroppable({ id: cat.id.toString() });
+  return (
+    <div
+      ref={setNodeRef}
+      onClick={onClick}
+      className={`h-28 rounded-3xl border-2 transition-all flex flex-col items-center justify-center relative cursor-pointer ${isOver ? 'border-blue-500 bg-blue-50 scale-110 z-10 shadow-xl' :
+          isSelected ? 'border-gray-900 bg-white shadow-md' : 'border-gray-100 bg-gray-50/50'
+        }`}
+    >
+      {isSelected && <CheckCircle2 size={16} className="absolute top-3 right-3 text-gray-900" />}
+      <span className={`text-[10px] font-black uppercase tracking-widest text-center px-2 ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+        {cat.name}
+      </span>
+    </div>
+  );
+}
