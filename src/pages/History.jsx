@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Search, Filter, RotateCcw, ChevronLeft, ChevronRight,
-  Hash, Tag, Edit2, Check, X, Calendar, DollarSign, Trash2, Upload, ImageIcon, ChevronDown
+  Hash, Tag, Edit2, Check, X, Calendar, DollarSign, Trash2, Upload, ImageIcon, ChevronDown, Download
 } from 'lucide-react';
 
 export default function History() {
@@ -176,6 +176,21 @@ export default function History() {
   };
 
   const totalPages = Math.ceil(totalRows / size);
+
+  const handleExportCsv = async () => {
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/transactions/export/csv', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
@@ -411,7 +426,15 @@ export default function History() {
 
         {/* PAGINATION */}
         <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-          <p className="text-xs text-gray-400 font-bold uppercase ml-2 tracking-widest">Total: {totalRows}</p>
+          <div className="flex items-center gap-3">
+            <p className="text-xs text-gray-400 font-bold uppercase ml-2 tracking-widest">Total: {totalRows}</p>
+            <button
+              onClick={handleExportCsv}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition"
+            >
+              <Download size={13}/> Export CSV
+            </button>
+          </div>
           <div className="flex gap-2">
             <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronLeft size={18}/></button>
             <div className="flex items-center px-4 text-xs font-bold text-gray-500 uppercase tracking-tighter">Page {page + 1} / {totalPages || 1}</div>
@@ -485,12 +508,20 @@ export default function History() {
         )}
 
         {/* Mobile Pagination */}
-        <div className="flex items-center justify-between pt-2">
-          <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Total: {totalRows}</p>
-          <div className="flex gap-2 items-center">
-            <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronLeft size={18}/></button>
-            <span className="text-xs font-bold text-gray-500">{page + 1} / {totalPages || 1}</span>
-            <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronRight size={18}/></button>
+        <div className="flex flex-col gap-2 pt-2">
+          <button
+            onClick={handleExportCsv}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold hover:bg-emerald-100 transition"
+          >
+            <Download size={15}/> Export All as CSV
+          </button>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Total: {totalRows}</p>
+            <div className="flex gap-2 items-center">
+              <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronLeft size={18}/></button>
+              <span className="text-xs font-bold text-gray-500">{page + 1} / {totalPages || 1}</span>
+              <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronRight size={18}/></button>
+            </div>
           </div>
         </div>
       </div>
