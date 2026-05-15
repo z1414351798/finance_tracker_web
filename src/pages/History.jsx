@@ -23,6 +23,12 @@ export default function History() {
   const [lightboxUrl, setLightboxUrl] = useState(null);
   const uploadInputRef = useRef(null);
   const [uploadingId, setUploadingId] = useState(null);
+  const [flippedCards, setFlippedCards] = useState(new Set());
+  const toggleFlip = (id) => setFlippedCards(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
 
   // --- Filter State ---
   const [filters, setFilters] = useState({
@@ -446,7 +452,7 @@ export default function History() {
       {/* MOBILE CARD LIST */}
       <div className="md:hidden space-y-3">
         {data.length > 0 ? data.map(row => (
-          <div key={row.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-3">
+          <div key={row.id} className={`rounded-2xl shadow-sm border overflow-hidden ${editingId === row.id ? 'bg-white border-gray-100 p-4 space-y-3' : flippedCards.has(row.id) ? 'border-slate-700' : 'bg-white border-gray-100 p-4'}`}>
             {editingId === row.id ? (
               // Mobile edit form
               <div className="space-y-3">
@@ -468,39 +474,98 @@ export default function History() {
                 </div>
               </div>
             ) : (
-              // Mobile view card
-              <>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-800 truncate">{row.text}</p>
-                    {row.note && <p className="text-xs text-gray-400 italic mt-0.5">"{row.note}"</p>}
-                    <p className="text-xs text-gray-400 mt-1">{new Date(row.date).toLocaleDateString()}</p>
+              // ── 3D Flip Card ───────────────────────────────────────
+              <div
+                style={{ perspective: '1000px', minHeight: '90px' }}
+                onClick={() => toggleFlip(row.id)}
+              >
+                <div style={{
+                  position: 'relative',
+                  transformStyle: 'preserve-3d',
+                  transition: 'transform 0.55s cubic-bezier(0.4,0.2,0.2,1)',
+                  transform: flippedCards.has(row.id) ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                  minHeight: '90px',
+                }}>
+
+                  {/* ── FRONT ─────────────────────────────────────── */}
+                  <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-800 truncate">{row.text}</p>
+                        <p className="text-xs text-gray-400 mt-1">{new Date(row.date).toLocaleDateString()}</p>
+                      </div>
+                      <p className={`font-mono font-bold text-base whitespace-nowrap ${row.amount < 0 ? 'text-rose-500' : 'text-emerald-600'}`}>
+                        {row.amount < 0 ? '-' : '+'}${Math.abs(row.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">
+                        {row.categoryName || 'General'}
+                      </span>
+                      <span className="text-xs text-gray-300 flex items-center gap-1">
+                        {(row.imagePresignedUrl || row.imageUrl)
+                          ? <ImageIcon size={13} className="text-blue-300" />
+                          : <ImageIcon size={13} />}
+                        tap to flip
+                      </span>
+                    </div>
                   </div>
-                  <p className={`font-mono font-bold text-base whitespace-nowrap ${row.amount < 0 ? 'text-rose-500' : 'text-emerald-600'}`}>
-                    {row.amount < 0 ? '-' : '+'}${Math.abs(row.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">
-                    {row.categoryName || 'General'}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    {(row.imagePresignedUrl || row.imageUrl) ? (
-                      <button onClick={() => setLightboxUrl(row.imagePresignedUrl || row.imageUrl)}>
-                        <img src={row.imagePresignedUrl || row.imageUrl} alt="Receipt" className="w-8 h-8 object-cover rounded-lg border border-gray-200" />
-                      </button>
-                    ) : (
-                      <span className="text-gray-200"><ImageIcon size={16} /></span>
-                    )}
-                    <button onClick={() => startEdit(row)} className="p-1.5 text-gray-300 hover:text-blue-600 transition-colors">
-                      <Edit2 size={15} />
-                    </button>
-                    <button onClick={() => setConfirmDeleteId(row.id)} className="p-1.5 text-gray-300 hover:text-rose-500 transition-colors">
-                      <Trash2 size={15} />
-                    </button>
+
+                  {/* ── BACK ──────────────────────────────────────── */}
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)',
+                    background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                    borderRadius: '16px',
+                    padding: '14px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                  }}>
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Note</p>
+                      <p className="text-sm text-white leading-relaxed">
+                        {row.note || <span className="italic text-slate-500">No note added</span>}
+                      </p>
+                    </div>
+                    <div className="flex items-end justify-between mt-3">
+                      {(row.imagePresignedUrl || row.imageUrl) ? (
+                        <button
+                          onClick={e => { e.stopPropagation(); setLightboxUrl(row.imagePresignedUrl || row.imageUrl); }}
+                          className="relative"
+                        >
+                          <img
+                            src={row.imagePresignedUrl || row.imageUrl}
+                            alt="Receipt"
+                            className="w-14 h-14 object-cover rounded-xl border-2 border-slate-600 shadow-lg"
+                          />
+                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                            <ImageIcon size={9} className="text-white" />
+                          </span>
+                        </button>
+                      ) : (
+                        <span className="text-slate-600 text-xs italic">No receipt</span>
+                      )}
+                      <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                        <button
+                          onClick={() => { toggleFlip(row.id); startEdit(row); }}
+                          className="p-2 rounded-xl bg-slate-700 hover:bg-blue-600 transition-colors"
+                        >
+                          <Edit2 size={14} className="text-slate-300" />
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteId(row.id)}
+                          className="p-2 rounded-xl bg-slate-700 hover:bg-rose-600 transition-colors"
+                        >
+                          <Trash2 size={14} className="text-slate-300" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
-              </>
+              </div>
             )}
           </div>
         )) : (
