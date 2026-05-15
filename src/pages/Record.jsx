@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Move, CheckCircle2, X } from 'lucide-react';
+import { Plus, Move, CheckCircle2, X, CalendarDays } from 'lucide-react';
 import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -13,7 +13,8 @@ export default function Record() {
     amount: '',
     categoryId: '',
     type: 'EXPENSE',
-    note: ''
+    note: '',
+    date: new Date().toISOString().split('T')[0],
   });
   const [availableCategories, setAvailableCategories] = useState([]);
   const [newCatName, setNewCatName] = useState('');
@@ -67,23 +68,23 @@ export default function Record() {
     const res = await fetch('/api/transactions/add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ ...formData, amount: finalAmount, date: new Date().toISOString().split('T')[0] }),
+      body: JSON.stringify({ ...formData, amount: finalAmount }),
     });
 
     if (res.ok) {
       setToastOpen(true);
-      setFormData({ text: '', amount: '', categoryId: '', type: formData.type, note: '' });
+      setFormData({ text: '', amount: '', categoryId: '', type: formData.type, note: '', date: new Date().toISOString().split('T')[0] });
     }
   };
 
   return (
     <Toast.Provider swipeDirection="right">
-      <div className="max-w-4xl mx-auto p-10 font-sans">
+      <div className="max-w-4xl mx-auto p-4 md:p-10 font-sans">
         <DndContext onDragEnd={handleDragEnd}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* 1. INPUTS SIDE */}
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl border border-gray-100 space-y-6 h-fit">
+            <div className="bg-white p-5 md:p-8 rounded-[2.5rem] shadow-2xl border border-gray-100 space-y-6 h-fit">
               <h2 className="text-2xl font-black text-gray-800 tracking-tight">1. DETAILS</h2>
 
               {/* Updated Toggle: Centered and Larger */}
@@ -106,7 +107,7 @@ export default function Record() {
               <div className="space-y-4">
                 <input type="number" placeholder="0.00" value={formData.amount}
                   onChange={e => setFormData({ ...formData, amount: e.target.value })}
-                  className="w-full text-5xl font-black outline-none placeholder:text-gray-100 focus:text-blue-600 transition-colors"
+                  className="w-full text-4xl md:text-5xl font-black outline-none placeholder:text-gray-100 focus:text-blue-600 transition-colors"
                 />
                 <input placeholder="What is this for?" value={formData.text}
                   onChange={e => setFormData({ ...formData, text: e.target.value })}
@@ -116,7 +117,7 @@ export default function Record() {
 
               <DraggableTransaction text={formData.text} amount={formData.amount} type={formData.type} />
 
-              {/* NOTE FIELD ADDED BACK */}
+              {/* NOTE FIELD */}
               <textarea
                 placeholder="Add a note..."
                 className="w-full p-4 bg-gray-50 rounded-2xl h-24 outline-none text-sm border-none resize-none font-medium text-gray-600"
@@ -124,8 +125,24 @@ export default function Record() {
                 onChange={e => setFormData({ ...formData, note: e.target.value })}
               />
 
+              {/* DATE PICKER */}
+              <div className="relative">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 block mb-1.5">
+                  Date
+                </label>
+                <div className="relative">
+                  <CalendarDays size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  <input
+                    type="date"
+                    value={formData.date}
+                    onChange={e => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 rounded-2xl outline-none border-none font-bold text-gray-700 text-sm appearance-none"
+                  />
+                </div>
+              </div>
+
               <button onClick={handleSubmit} disabled={!formData.categoryId}
-                className={`w-full py-5 rounded-2xl font-black text-white transition-all transform active:scale-95 ${!formData.categoryId ? 'bg-gray-200' : formData.type === 'EXPENSE' ? 'bg-red-500 shadow-red-100 shadow-xl' : 'bg-green-500 shadow-green-100 shadow-xl'
+                className={`w-full py-5 rounded-2xl font-black text-white transition-all transform active:scale-95 ${!formData.categoryId ? 'bg-gray-200' : formData.type === 'EXPENSE' ? 'bg-gradient-to-r from-red-500 to-rose-600 shadow-red-100 shadow-xl' : 'bg-gradient-to-r from-emerald-500 to-green-600 shadow-green-100 shadow-xl'
                   }`}>
                 CONFIRM & SAVE
               </button>

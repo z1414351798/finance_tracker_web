@@ -116,24 +116,24 @@ export default function Recurring() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <RefreshCw size={22} className="text-blue-600" /> Recurring Transactions
+        <h1 className="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <RefreshCw size={22} className="text-blue-600" /> Recurring
         </h1>
         <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
           <Dialog.Trigger asChild>
             <button
               onClick={() => { setForm(defaultForm); setError(''); }}
-              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition shadow-sm"
             >
-              <Plus size={16} /> Add Recurring
+              <Plus size={16} /> <span className="hidden sm:inline">Add Recurring</span><span className="sm:hidden">Add</span>
             </button>
           </Dialog.Trigger>
 
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
-            <Dialog.Content className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-5">
+            <Dialog.Content className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 bg-white rounded-3xl shadow-2xl p-6 md:p-8 space-y-5">
               <div className="flex items-center justify-between">
                 <Dialog.Title className="text-xl font-bold text-gray-800">New Recurring Transaction</Dialog.Title>
                 <Dialog.Close asChild>
@@ -240,8 +240,8 @@ export default function Recurring() {
         </Dialog.Root>
       </div>
 
-      {/* List */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      {/* Desktop table */}
+      <div className="hidden md:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-20 flex justify-center">
             <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
@@ -303,6 +303,56 @@ export default function Recurring() {
             </tbody>
           </table>
         )}
+      </div>
+
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="flex justify-center py-16">
+            <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+          </div>
+        ) : items.length === 0 ? (
+          <p className="text-center py-16 text-gray-400 italic">No recurring transactions yet.</p>
+        ) : items.map(item => (
+          <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-800 truncate">{item.name}</p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Next: {item.nextRunDate ? new Date(item.nextRunDate).toLocaleDateString() : '—'}
+                </p>
+              </div>
+              <p className={`font-mono font-bold text-base whitespace-nowrap ${item.type === 'EXPENSE' ? 'text-rose-500' : 'text-emerald-600'}`}>
+                {item.type === 'EXPENSE' ? '-' : '+'}${Math.abs(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${item.type === 'INCOME' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                  {item.type}
+                </span>
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${freqBadgeColor[item.frequency] || 'bg-gray-50 text-gray-600'}`}>
+                  {item.frequency}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleToggleActive(item)}
+                  className={`transition ${item.active ? 'text-emerald-500 hover:text-emerald-700' : 'text-gray-300 hover:text-gray-500'}`}
+                  title={item.active ? 'Deactivate' : 'Activate'}
+                >
+                  {item.active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+                </button>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="p-1.5 text-gray-300 hover:text-rose-500 transition-colors"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

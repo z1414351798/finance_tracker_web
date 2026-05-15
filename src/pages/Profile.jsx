@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as Toast from '@radix-ui/react-toast';
-import { User, Mail, Lock, Camera } from 'lucide-react';
+import { User, Mail, Lock, Camera, LogOut, Trash2 } from 'lucide-react';
 
 export default function Profile() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +18,10 @@ export default function Profile() {
 
   // Avatar
   const [avatarUploading, setAvatarUploading] = useState(false);
+
+  // Delete account
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const avatarInputRef = useRef(null);
 
   // Toast
@@ -23,6 +29,34 @@ export default function Profile() {
   const [toastMsg, setToastMsg] = useState({ title: '', description: '', variant: 'success' });
 
   const token = () => localStorage.getItem('token');
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/profile/account', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('privacy_accepted');
+        navigate('/login');
+      } else {
+        showToast('Error', 'Failed to delete account. Please try again.', 'error');
+      }
+    } catch {
+      showToast('Error', 'Network error. Please try again.', 'error');
+    } finally {
+      setDeletingAccount(false);
+      setShowDeleteModal(false);
+    }
+  };
 
   const showToast = (title, description, variant = 'success') => {
     setToastMsg({ title, description, variant });
@@ -141,11 +175,11 @@ export default function Profile() {
 
   return (
     <Toast.Provider swipeDirection="right">
-      <div className="p-8 max-w-2xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
+      <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
         <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
 
         {/* Avatar + Username card */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 flex flex-col items-center gap-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8 flex flex-col items-center gap-4">
           <div className="relative">
             {profile?.presignedImageUrl ? (
               <img
@@ -184,7 +218,7 @@ export default function Profile() {
         </div>
 
         {/* Email card */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8 space-y-4">
           <div className="flex items-center gap-2 border-b border-gray-50 pb-4">
             <Mail size={18} className="text-blue-600" />
             <h2 className="text-lg font-bold text-gray-800">Email Address</h2>
@@ -208,7 +242,7 @@ export default function Profile() {
         </div>
 
         {/* Change Password card */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 space-y-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8 space-y-4">
           <div className="flex items-center gap-2 border-b border-gray-50 pb-4">
             <Lock size={18} className="text-blue-600" />
             <h2 className="text-lg font-bold text-gray-800">Change Password</h2>
@@ -244,7 +278,56 @@ export default function Profile() {
             </button>
           </form>
         </div>
+
+        {/* Sign Out */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-red-200 bg-white text-red-500 font-semibold text-sm hover:bg-red-50 transition"
+        >
+          <LogOut size={18} /> Sign Out
+        </button>
+
+        {/* Delete Account */}
+        <button
+          onClick={() => setShowDeleteModal(true)}
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-rose-50 text-rose-800 font-semibold text-sm hover:bg-rose-100 transition border border-rose-200"
+        >
+          <Trash2 size={18} /> Delete Account
+        </button>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+                <Trash2 size={20} className="text-rose-700" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900">Delete Account?</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-6">
+              This will permanently delete your account, all transactions, categories, goals, and uploaded images.{' '}
+              <strong className="text-rose-700">This cannot be undone.</strong>
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium text-sm hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 text-white font-semibold text-sm hover:bg-rose-700 transition disabled:opacity-60"
+              >
+                {deletingAccount ? 'Deleting…' : 'Delete Forever'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast */}
       <Toast.Root

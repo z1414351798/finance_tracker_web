@@ -37,15 +37,15 @@ export default function Analytics() {
     : ['#10b981', '#059669', '#34d399', '#064e3b']; // Green colors for income
 
   return (
-    <div className="p-10 space-y-10">
-      <h1 className="text-3xl font-bold">Financial Analytics</h1>
+    <div className="p-4 md:p-10 space-y-10">
+      <h1 className="text-xl md:text-3xl font-bold">Financial Analytics</h1>
 
       {/* New Trend Chart spans the full width */}
       <TrendChart />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[500px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Bar Chart */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border">
+        <div className="bg-white p-6 rounded-3xl shadow-sm border" style={{ height: '420px' }}>
           <h3 className="font-bold mb-4">Inflow vs Outflow</h3>
           <ResponsiveContainer width="100%" height="90%">
             <BarChart data={barData}>
@@ -57,13 +57,11 @@ export default function Analytics() {
         </div>
 
         {/* Pie Chart with Filter */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border relative">
+        <div className="bg-white p-6 rounded-3xl shadow-sm border relative" style={{ height: '420px' }}>
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold">Distribution</h3>
-            
-            {/* The Select Toggle */}
-            <select 
-              value={viewType} 
+            <select
+              value={viewType}
               onChange={(e) => setViewType(e.target.value)}
               className="bg-gray-50 border border-gray-200 text-sm rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -72,15 +70,15 @@ export default function Analytics() {
             </select>
           </div>
 
-          <ResponsiveContainer width="100%" height="85%">
+          <ResponsiveContainer width="100%" height="88%">
             <PieChart>
-              <Pie 
-                data={activePieData} 
-                innerRadius={70} 
-                outerRadius={100} 
-                dataKey="value" 
+              <Pie
+                data={activePieData}
+                innerRadius={80}
+                outerRadius={120}
+                dataKey="value"
                 nameKey="name"
-                animationDuration={800} // Smooth transition when switching
+                animationDuration={800}
               >
                 {activePieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>

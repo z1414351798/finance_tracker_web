@@ -11,13 +11,19 @@ import Profile from './pages/Profile';
 import Recurring from './pages/Recurring';
 import NebulaPage from './pages/NebulaPage';
 import FinancialSkylinePage from './pages/FinancialSkyline';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   return (
     <Router>
+      <CookieBanner />
       <Routes>
-        {/* Public Route */}
+        {/* Public Routes */}
         <Route path="/login" element={<Auth />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* Protected Routes wrapped in Layout (Sidebar/Header) */}
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
