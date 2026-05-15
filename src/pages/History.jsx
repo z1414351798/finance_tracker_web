@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Search, Filter, RotateCcw, ChevronLeft, ChevronRight, 
-  Hash, Tag, Edit2, Check, X, Calendar, DollarSign 
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Search, Filter, RotateCcw, ChevronLeft, ChevronRight,
+  Hash, Tag, Edit2, Check, X, Calendar, DollarSign, Trash2, Upload, ImageIcon
 } from 'lucide-react';
 
 export default function History() {
@@ -13,8 +13,16 @@ export default function History() {
   const size = 15;
 
   // --- Inline Editing State ---
-  const [editingId, setEditingId] = useState(null); 
+  const [editingId, setEditingId] = useState(null);
   const [editFormData, setEditFormData] = useState({});
+
+  // --- Delete State ---
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+  // --- Receipt Image State ---
+  const [lightboxUrl, setLightboxUrl] = useState(null);
+  const uploadInputRef = useRef(null);
+  const [uploadingId, setUploadingId] = useState(null);
 
   // --- Filter State ---
   const [filters, setFilters] = useState({
@@ -112,6 +120,43 @@ export default function History() {
     }
   };
 
+  // --- Delete Action ---
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/transactions/delete/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (res.ok) {
+        setConfirmDeleteId(null);
+        fetchHistory();
+      }
+    } catch (err) {
+      console.error("Error deleting transaction:", err);
+    }
+  };
+
+  // --- Receipt Upload ---
+  const handleReceiptUpload = async (id, file) => {
+    setUploadingId(id);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch(`/api/transactions/${id}/image`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: formData,
+      });
+      if (res.ok) {
+        fetchHistory();
+      }
+    } catch (err) {
+      console.error("Error uploading receipt:", err);
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
   // --- Filter Helpers ---
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -131,6 +176,38 @@ export default function History() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
+
+      {/* Lightbox Modal */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setLightboxUrl(null)}
+        >
+          <div className="relative max-w-4xl max-h-full" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={() => setLightboxUrl(null)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300"
+            >
+              <X size={28} />
+            </button>
+            <img src={lightboxUrl} alt="Receipt" className="max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain" />
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm Dialog */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm space-y-4">
+            <h3 className="text-lg font-bold text-gray-800">Delete Transaction?</h3>
+            <p className="text-sm text-gray-500">This action cannot be undone.</p>
+            <div className="flex gap-3 justify-end pt-2">
+              <button onClick={() => setConfirmDeleteId(null)} className="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium">Cancel</button>
+              <button onClick={() => handleDelete(confirmDeleteId)} className="px-4 py-2 rounded-xl bg-rose-500 text-white hover:bg-rose-600 text-sm font-medium">Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* 1. RESTORED FILTER PANEL */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-6">
@@ -214,6 +291,7 @@ export default function History() {
                 <th className="p-5">Date</th>
                 <th className="p-5">Transaction / Notes</th>
                 <th className="p-5">Category</th>
+                <th className="p-5 text-center">Receipt</th>
                 <th className="p-5 text-right">Amount</th>
                 <th className="p-5 text-center">Action</th>
               </tr>
@@ -235,6 +313,26 @@ export default function History() {
                         <select name="categoryId" value={editFormData.categoryId} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none">
                           {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                         </select>
+                      </td>
+                      <td className="p-4 text-center">
+                        <label className="cursor-pointer inline-flex flex-col items-center gap-1 text-blue-500 hover:text-blue-700">
+                          {uploadingId === row.id ? (
+                            <span className="text-xs text-gray-400">Uploading…</span>
+                          ) : (
+                            <>
+                              <Upload size={18} />
+                              <span className="text-[10px] font-bold uppercase">Upload</span>
+                            </>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={e => {
+                              if (e.target.files[0]) handleReceiptUpload(row.id, e.target.files[0]);
+                            }}
+                          />
+                        </label>
                       </td>
                       <td className="p-4">
                         <input type="number" name="amount" value={editFormData.amount} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm text-right outline-none" />
@@ -259,19 +357,37 @@ export default function History() {
                           {row.categoryName || 'General'}
                         </span>
                       </td>
+                      <td className="p-5 text-center">
+                        {(row.imagePresignedUrl || row.imageUrl) ? (
+                          <button onClick={() => setLightboxUrl(row.imagePresignedUrl || row.imageUrl)}>
+                            <img
+                              src={row.imagePresignedUrl || row.imageUrl}
+                              alt="Receipt"
+                              className="w-10 h-10 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition"
+                            />
+                          </button>
+                        ) : (
+                          <span className="text-gray-200"><ImageIcon size={18} /></span>
+                        )}
+                      </td>
                       <td className={`p-5 text-right font-mono font-bold ${row.amount < 0 ? 'text-rose-500' : 'text-emerald-600'}`}>
                         {row.amount < 0 ? '-' : '+'}${Math.abs(row.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </td>
                       <td className="p-5 text-center">
-                        <button onClick={() => startEdit(row)} className="p-2 text-gray-300 hover:text-blue-600 transition-colors">
-                          <Edit2 size={16} />
-                        </button>
+                        <div className="flex justify-center gap-1">
+                          <button onClick={() => startEdit(row)} className="p-2 text-gray-300 hover:text-blue-600 transition-colors">
+                            <Edit2 size={16} />
+                          </button>
+                          <button onClick={() => setConfirmDeleteId(row.id)} className="p-2 text-gray-300 hover:text-rose-500 transition-colors">
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </td>
                     </>
                   )}
                 </tr>
               )) : (
-                <tr><td colSpan={5} className="p-20 text-center text-gray-400 italic">No matches found.</td></tr>
+                <tr><td colSpan={6} className="p-20 text-center text-gray-400 italic">No matches found.</td></tr>
               )}
             </tbody>
           </table>

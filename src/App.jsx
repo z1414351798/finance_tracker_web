@@ -7,6 +7,8 @@ import History from './pages/History';
 import ProtectedRoute from './components/ProtectedRoute';
 import Analytics from './pages/Analytics';
 import Record from './pages/Record';
+import Profile from './pages/Profile';
+import Recurring from './pages/Recurring';
 import NebulaPage from './pages/NebulaPage';
 import FinancialSkylinePage from './pages/FinancialSkyline';
 
@@ -24,6 +26,8 @@ function App() {
           <Route path="history" element={<History />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="record" element={<Record />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="recurring" element={<Recurring />} />
           <Route path="/nebula" element={<NebulaPage />} />
           <Route path="/financialSkyline" element={<FinancialSkylinePage />} />
         </Route>

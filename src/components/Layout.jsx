@@ -1,5 +1,8 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, History as HistoryIcon, LogOut, CirclePlusIcon, ChartNoAxesCombinedIcon, Maximize2Icon, Building2Icon } from 'lucide-react';
+import {
+  LayoutDashboard, History as HistoryIcon, LogOut, PlusCircle,
+  ChartNoAxesCombinedIcon, Maximize2Icon, Building2Icon, User, RefreshCw
+} from 'lucide-react';
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -11,12 +14,14 @@ export default function Layout() {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20}/> },
-    { name: 'Record', path: '/record', icon: <HistoryIcon size={20}/> },
-    { name: 'History', path: '/history', icon: <CirclePlusIcon size={20}/> },
-    { name: 'Analytics', path: '/analytics', icon: <ChartNoAxesCombinedIcon size={20}/> },
-    { name: 'Nebula', path: '/nebula', icon: <Maximize2Icon size={20}/> },
-    { name: 'FinancialSkyline', path: '/financialSkyline', icon: <Building2Icon size={20}/> },
+    { name: 'Dashboard',        path: '/dashboard',       icon: <LayoutDashboard size={20}/> },
+    { name: 'Record',           path: '/record',          icon: <PlusCircle size={20}/> },
+    { name: 'History',          path: '/history',         icon: <HistoryIcon size={20}/> },
+    { name: 'Analytics',        path: '/analytics',       icon: <ChartNoAxesCombinedIcon size={20}/> },
+    { name: 'Recurring',        path: '/recurring',       icon: <RefreshCw size={20}/> },
+    { name: 'Profile',          path: '/profile',         icon: <User size={20}/> },
+    { name: 'Nebula',           path: '/nebula',          icon: <Maximize2Icon size={20}/> },
+    { name: 'FinancialSkyline', path: '/financialSkyline',icon: <Building2Icon size={20}/> },
   ];
 
   return (
