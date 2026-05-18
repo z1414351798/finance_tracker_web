@@ -110,15 +110,15 @@ export default function Recurring() {
   };
 
   const freqBadgeColor = {
-    DAILY: 'bg-purple-50 text-purple-700',
-    WEEKLY: 'bg-blue-50 text-blue-700',
-    MONTHLY: 'bg-indigo-50 text-indigo-700',
+    DAILY: 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400',
+    WEEKLY: 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400',
+    MONTHLY: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400',
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6 min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
       <div className="flex items-center justify-between">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+        <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
           <RefreshCw size={22} className="text-blue-600" /> Recurring
         </h1>
         <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -133,29 +133,30 @@ export default function Recurring() {
 
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" />
-            <Dialog.Content className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 bg-white rounded-3xl shadow-2xl p-6 md:p-8 space-y-5">
+            <Dialog.Content className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md mx-4 rounded-3xl shadow-2xl p-6 md:p-8 space-y-5" style={{ backgroundColor: 'var(--bg-card)' }}>
               <div className="flex items-center justify-between">
-                <Dialog.Title className="text-xl font-bold text-gray-800">New Recurring Transaction</Dialog.Title>
+                <Dialog.Title className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>New Recurring Transaction</Dialog.Title>
                 <Dialog.Close asChild>
-                  <button className="text-gray-300 hover:text-gray-500"><X size={22} /></button>
+                  <button style={{ color: 'var(--text-muted)' }} className="hover:text-gray-500"><X size={22} /></button>
                 </Dialog.Close>
               </div>
 
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Name</label>
+                  <label className="text-[10px] font-bold uppercase ml-1" style={{ color: 'var(--text-muted)' }}>Name</label>
                   <input
                     required
                     value={form.name}
                     onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                     placeholder="e.g. Netflix subscription"
-                    className="w-full px-4 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100"
+                    style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Amount</label>
+                    <label className="text-[10px] font-bold uppercase ml-1" style={{ color: 'var(--text-muted)' }}>Amount</label>
                     <input
                       required
                       type="number"
@@ -164,24 +165,27 @@ export default function Recurring() {
                       value={form.amount}
                       onChange={e => setForm(p => ({ ...p, amount: e.target.value }))}
                       placeholder="0.00"
-                      className="w-full px-4 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100"
+                      className="w-full px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100"
+                      style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Type</label>
-                    <div className="flex rounded-xl overflow-hidden border border-gray-100">
+                    <label className="text-[10px] font-bold uppercase ml-1" style={{ color: 'var(--text-muted)' }}>Type</label>
+                    <div className="flex rounded-xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
                       <button
                         type="button"
                         onClick={() => setForm(p => ({ ...p, type: 'EXPENSE' }))}
-                        className={`flex-1 py-2.5 text-xs font-bold transition ${form.type === 'EXPENSE' ? 'bg-rose-500 text-white' : 'bg-gray-50 text-gray-400'}`}
+                        className={`flex-1 py-2.5 text-xs font-bold transition ${form.type === 'EXPENSE' ? 'bg-rose-500 text-white' : 'text-gray-400 dark:text-slate-500'}`}
+                        style={form.type !== 'EXPENSE' ? { backgroundColor: 'var(--bg-input)' } : {}}
                       >
                         Expense
                       </button>
                       <button
                         type="button"
                         onClick={() => setForm(p => ({ ...p, type: 'INCOME' }))}
-                        className={`flex-1 py-2.5 text-xs font-bold transition ${form.type === 'INCOME' ? 'bg-emerald-500 text-white' : 'bg-gray-50 text-gray-400'}`}
+                        className={`flex-1 py-2.5 text-xs font-bold transition ${form.type === 'INCOME' ? 'bg-emerald-500 text-white' : 'text-gray-400 dark:text-slate-500'}`}
+                        style={form.type !== 'INCOME' ? { backgroundColor: 'var(--bg-input)' } : {}}
                       >
                         Income
                       </button>
@@ -190,11 +194,12 @@ export default function Recurring() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Category</label>
+                  <label className="text-[10px] font-bold uppercase ml-1" style={{ color: 'var(--text-muted)' }}>Category</label>
                   <select
                     value={form.categoryId}
                     onChange={e => setForm(p => ({ ...p, categoryId: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100"
+                    className="w-full px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100"
+                    style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
                   >
                     <option value="">No category</option>
                     {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
@@ -203,24 +208,26 @@ export default function Recurring() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Frequency</label>
+                    <label className="text-[10px] font-bold uppercase ml-1" style={{ color: 'var(--text-muted)' }}>Frequency</label>
                     <select
                       value={form.frequency}
                       onChange={e => setForm(p => ({ ...p, frequency: e.target.value }))}
-                      className="w-full px-4 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100"
+                      className="w-full px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100"
+                      style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
                     >
                       {FREQUENCIES.map(f => <option key={f} value={f}>{f.charAt(0) + f.slice(1).toLowerCase()}</option>)}
                     </select>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Start Date</label>
+                    <label className="text-[10px] font-bold uppercase ml-1" style={{ color: 'var(--text-muted)' }}>Start Date</label>
                     <input
                       type="date"
                       required
                       value={form.startDate}
                       onChange={e => setForm(p => ({ ...p, startDate: e.target.value }))}
-                      className="w-full px-4 py-2.5 bg-gray-50 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100"
+                      className="w-full px-4 py-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100"
+                      style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
                     />
                   </div>
                 </div>
@@ -241,17 +248,17 @@ export default function Recurring() {
       </div>
 
       {/* Desktop table */}
-      <div className="hidden md:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="hidden md:block rounded-3xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
         {loading ? (
           <div className="p-20 flex justify-center">
             <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
           </div>
         ) : items.length === 0 ? (
-          <p className="p-20 text-center text-gray-400 italic">No recurring transactions yet.</p>
+          <p className="p-20 text-center italic" style={{ color: 'var(--text-muted)' }}>No recurring transactions yet.</p>
         ) : (
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-400 uppercase tracking-widest text-[10px] font-bold">
+              <tr className="border-b uppercase tracking-widest text-[10px] font-bold" style={{ backgroundColor: 'var(--bg-card-hover)', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
                 <th className="p-5">Name</th>
                 <th className="p-5">Type</th>
                 <th className="p-5">Frequency</th>
@@ -261,21 +268,21 @@ export default function Recurring() {
                 <th className="p-5 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody>
               {items.map(item => (
-                <tr key={item.id} className="hover:bg-blue-50/10 transition-colors">
-                  <td className="p-5 font-semibold text-gray-800">{item.name}</td>
+                <tr key={item.id} className="hover:bg-blue-50/10 dark:hover:bg-blue-900/10 transition-colors border-b" style={{ borderColor: 'var(--border)' }}>
+                  <td className="p-5 font-semibold" style={{ color: 'var(--text-primary)' }}>{item.name}</td>
                   <td className="p-5">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${item.type === 'INCOME' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${item.type === 'INCOME' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400'}`}>
                       {item.type}
                     </span>
                   </td>
                   <td className="p-5">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${freqBadgeColor[item.frequency] || 'bg-gray-50 text-gray-600'}`}>
+                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${freqBadgeColor[item.frequency] || 'bg-gray-50 dark:bg-[#334155] text-gray-600 dark:text-slate-400'}`}>
                       {item.frequency}
                     </span>
                   </td>
-                  <td className="p-5 text-sm text-gray-500">
+                  <td className="p-5 text-sm" style={{ color: 'var(--text-secondary)' }}>
                     {item.nextRunDate ? new Date(item.nextRunDate).toLocaleDateString() : '—'}
                   </td>
                   <td className={`p-5 text-right font-mono font-bold ${item.type === 'EXPENSE' ? 'text-rose-500' : 'text-emerald-600'}`}>
@@ -312,13 +319,13 @@ export default function Recurring() {
             <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
           </div>
         ) : items.length === 0 ? (
-          <p className="text-center py-16 text-gray-400 italic">No recurring transactions yet.</p>
+          <p className="text-center py-16 italic" style={{ color: 'var(--text-muted)' }}>No recurring transactions yet.</p>
         ) : items.map(item => (
-          <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-3">
+          <div key={item.id} className="rounded-2xl shadow-sm p-4 space-y-3" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-800 truncate">{item.name}</p>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{item.name}</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                   Next: {item.nextRunDate ? new Date(item.nextRunDate).toLocaleDateString() : '—'}
                 </p>
               </div>
@@ -328,10 +335,10 @@ export default function Recurring() {
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${item.type === 'INCOME' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${item.type === 'INCOME' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400'}`}>
                   {item.type}
                 </span>
-                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${freqBadgeColor[item.frequency] || 'bg-gray-50 text-gray-600'}`}>
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${freqBadgeColor[item.frequency] || 'bg-gray-50 dark:bg-[#334155] text-gray-600 dark:text-slate-400'}`}>
                   {item.frequency}
                 </span>
               </div>

@@ -26,30 +26,33 @@ export default function Analytics() {
     fetchSummary();
   }, []);
 
-  if (loading) return <div className="p-10 text-center">Analysing your data...</div>;
+  if (loading) return <div className="p-10 text-center" style={{ color: 'var(--text-secondary)' }}>Analysing your data...</div>;
 
   const barData = [{ name: 'Totals', Income: data.income, Expense: data.expense }];
-  
+
   // Decide which data to show based on the toggle
   const activePieData = viewType === 'EXPENSE' ? data.expenseCats : data.incomeCats;
-  const COLORS = viewType === 'EXPENSE' 
+  const COLORS = viewType === 'EXPENSE'
     ? ['#ef4444', '#f97316', '#f59e0b', '#7c3aed'] // Warm colors for expenses
     : ['#10b981', '#059669', '#34d399', '#064e3b']; // Green colors for income
 
   return (
     <div className="p-4 md:p-10 space-y-10">
-      <h1 className="text-xl md:text-3xl font-bold">Financial Analytics</h1>
+      <h1 className="text-xl md:text-3xl font-bold dark:text-gray-100">Financial Analytics</h1>
 
       {/* New Trend Chart spans the full width */}
       <TrendChart />
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Bar Chart */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border" style={{ height: '420px' }}>
-          <h3 className="font-bold mb-4">Inflow vs Outflow</h3>
+        <div className="p-6 rounded-3xl shadow-sm" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', height: '420px' }}>
+          <h3 className="font-bold mb-4 dark:text-gray-100">Inflow vs Outflow</h3>
           <ResponsiveContainer width="100%" height="90%">
             <BarChart data={barData}>
-              <XAxis dataKey="name" /> <YAxis /> <Tooltip /> <Legend />
+              <XAxis dataKey="name" stroke="var(--text-secondary)" />
+              <YAxis stroke="var(--text-secondary)" />
+              <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', color: 'var(--text-primary)' }} />
+              <Legend />
               <Bar dataKey="Income" fill="#10b981" radius={[5, 5, 0, 0]} />
               <Bar dataKey="Expense" fill="#ef4444" radius={[5, 5, 0, 0]} />
             </BarChart>
@@ -57,13 +60,14 @@ export default function Analytics() {
         </div>
 
         {/* Pie Chart with Filter */}
-        <div className="bg-white p-6 rounded-3xl shadow-sm border relative" style={{ height: '420px' }}>
+        <div className="p-6 rounded-3xl shadow-sm relative" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', height: '420px' }}>
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold">Distribution</h3>
+            <h3 className="font-bold dark:text-gray-100">Distribution</h3>
             <select
               value={viewType}
               onChange={(e) => setViewType(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-sm rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-100"
+              style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
             >
               <option value="EXPENSE">Expense Breakdown</option>
               <option value="INCOME">Income Breakdown</option>
@@ -82,12 +86,12 @@ export default function Analytics() {
               >
                 {activePieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
-              <Tooltip />
+              <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', color: 'var(--text-primary)' }} />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
           {activePieData.length === 0 && (
-            <p className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">No data for this type</p>
+            <p className="absolute inset-0 flex items-center justify-center text-sm" style={{ color: 'var(--text-muted)' }}>No data for this type</p>
           )}
         </div>
       </div>

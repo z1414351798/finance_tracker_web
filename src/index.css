@@ -1,1 +1,41 @@
 @import "tailwindcss";
+
+/* ── Dark mode: toggled via .dark class on <html> ── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Semantic color tokens ── */
+:root {
+  --bg-page:        #f8fafc;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f1f5f9;
+  --bg-input:       #f9fafb;
+  --border:         #e5e7eb;
+  --border-focus:   #6366f1;
+  --text-primary:   #111827;
+  --text-secondary: #6b7280;
+  --text-muted:     #9ca3af;
+  --nav-bg:         #ffffff;
+  --nav-border:     #e5e7eb;
+  --drawer-bg:      #ffffff;
+}
+
+.dark {
+  --bg-page:        #0f172a;
+  --bg-card:        #1e293b;
+  --bg-card-hover:  #334155;
+  --bg-input:       #1e293b;
+  --border:         #334155;
+  --border-focus:   #818cf8;
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+  --nav-bg:         #1e293b;
+  --nav-border:     #334155;
+  --drawer-bg:      #1e293b;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  transition: background-color 0.2s, color 0.2s;
+}

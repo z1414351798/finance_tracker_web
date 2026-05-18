@@ -20,16 +20,17 @@ export default function TrendChart() {
   }, [config]);
 
   return (
-    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm w-full">
+    <div className="p-8 rounded-3xl shadow-sm w-full" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h3 className="text-xl font-bold text-gray-800">Financial Trends</h3>
-        
+        <h3 className="text-xl font-bold dark:text-gray-100">Financial Trends</h3>
+
         <div className="flex gap-2">
           {/* Range Selector */}
-          <select 
-            value={config.range} 
+          <select
+            value={config.range}
             onChange={e => setConfig({...config, range: e.target.value})}
-            className="p-2 bg-gray-50 border rounded-lg text-sm font-medium outline-none"
+            className="p-2 rounded-lg text-sm font-medium outline-none dark:text-gray-100"
+            style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
           >
             <option value="DAY">Daily</option>
             <option value="MONTH">Monthly</option>
@@ -37,10 +38,11 @@ export default function TrendChart() {
           </select>
 
           {/* Type Selector */}
-          <select 
-            value={config.type} 
+          <select
+            value={config.type}
             onChange={e => setConfig({...config, type: e.target.value})}
-            className={`p-2 border rounded-lg text-sm font-bold outline-none ${config.type === 'EXPENSE' ? 'text-red-500' : 'text-green-500'}`}
+            className={`p-2 rounded-lg text-sm font-bold outline-none ${config.type === 'EXPENSE' ? 'text-red-500' : 'text-green-500'}`}
+            style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
           >
             <option value="EXPENSE">Expenses</option>
             <option value="INCOME">Incomes</option>
@@ -51,7 +53,7 @@ export default function TrendChart() {
       <div className="h-[350px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
             <XAxis 
               dataKey="timeLabel" 
               axisLine={false} 
@@ -64,8 +66,8 @@ export default function TrendChart() {
               tickLine={false} 
               tick={{fill: '#9ca3af', fontSize: 12}}
             />
-            <Tooltip 
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+            <Tooltip
+              contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
             />
             <Legend verticalAlign="top" align="right" height={36}/>
             <Line 

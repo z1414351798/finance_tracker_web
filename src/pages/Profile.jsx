@@ -175,11 +175,11 @@ export default function Profile() {
 
   return (
     <Toast.Provider swipeDirection="right">
-      <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
-        <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
+      <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6 min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Profile</h1>
 
         {/* Avatar + Username card */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8 flex flex-col items-center gap-4">
+        <div className="rounded-3xl shadow-sm p-5 md:p-8 flex flex-col items-center gap-4" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
           <div className="relative">
             {profile?.presignedImageUrl ? (
               <img
@@ -188,7 +188,7 @@ export default function Profile() {
                 className="w-24 h-24 rounded-full object-cover border-4 border-blue-100"
               />
             ) : (
-              <div className="w-24 h-24 rounded-full bg-blue-50 flex items-center justify-center border-4 border-blue-100">
+              <div className="w-24 h-24 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center border-4 border-blue-100 dark:border-blue-900/30">
                 <User size={40} className="text-blue-300" />
               </div>
             )}
@@ -212,16 +212,16 @@ export default function Profile() {
             />
           </div>
           <div className="text-center">
-            <p className="text-xl font-bold text-gray-800">{profile?.username}</p>
-            <p className="text-sm text-gray-400">Username</p>
+            <p className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{profile?.username}</p>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Username</p>
           </div>
         </div>
 
         {/* Email card */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-50 pb-4">
+        <div className="rounded-3xl shadow-sm p-5 md:p-8 space-y-4" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+          <div className="flex items-center gap-2 pb-4" style={{ borderBottom: '1px solid var(--border)' }}>
             <Mail size={18} className="text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-800">Email Address</h2>
+            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Email Address</h2>
           </div>
           <form onSubmit={handleEmailSave} className="space-y-4">
             <input
@@ -229,7 +229,8 @@ export default function Profile() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm"
+              className="w-full px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm dark:text-gray-100"
+              style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
             />
             <button
               type="submit"
@@ -242,10 +243,10 @@ export default function Profile() {
         </div>
 
         {/* Change Password card */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 md:p-8 space-y-4">
-          <div className="flex items-center gap-2 border-b border-gray-50 pb-4">
+        <div className="rounded-3xl shadow-sm p-5 md:p-8 space-y-4" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+          <div className="flex items-center gap-2 pb-4" style={{ borderBottom: '1px solid var(--border)' }}>
             <Lock size={18} className="text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-800">Change Password</h2>
+            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Change Password</h2>
           </div>
           <form onSubmit={handlePasswordSave} className="space-y-3">
             <input
@@ -253,21 +254,24 @@ export default function Profile() {
               placeholder="Current password"
               value={pwForm.currentPassword}
               onChange={e => setPwForm(p => ({ ...p, currentPassword: e.target.value }))}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm"
+              className="w-full px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm dark:text-gray-100"
+              style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
             />
             <input
               type="password"
               placeholder="New password"
               value={pwForm.newPassword}
               onChange={e => setPwForm(p => ({ ...p, newPassword: e.target.value }))}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm"
+              className="w-full px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm dark:text-gray-100"
+              style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
             />
             <input
               type="password"
               placeholder="Confirm new password"
               value={pwForm.confirmPassword}
               onChange={e => setPwForm(p => ({ ...p, confirmPassword: e.target.value }))}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm"
+              className="w-full px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition text-sm dark:text-gray-100"
+              style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}
             />
             <button
               type="submit"
@@ -282,7 +286,8 @@ export default function Profile() {
         {/* Sign Out */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-red-200 bg-white text-red-500 font-semibold text-sm hover:bg-red-50 transition"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm hover:bg-red-50 dark:hover:bg-red-900/10 transition text-red-500"
+          style={{ border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)' }}
         >
           <LogOut size={18} /> Sign Out
         </button>
@@ -290,7 +295,7 @@ export default function Profile() {
         {/* Delete Account */}
         <button
           onClick={() => setShowDeleteModal(true)}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-rose-50 text-rose-800 font-semibold text-sm hover:bg-rose-100 transition border border-rose-200"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-rose-50 dark:bg-rose-900/10 text-rose-800 dark:text-rose-400 font-semibold text-sm hover:bg-rose-100 dark:hover:bg-rose-900/20 transition border border-rose-200 dark:border-rose-900/30"
         >
           <Trash2 size={18} /> Delete Account
         </button>
@@ -299,21 +304,22 @@ export default function Profile() {
       {/* Delete Account Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full">
+          <div className="rounded-2xl shadow-2xl p-6 max-w-sm w-full" style={{ backgroundColor: 'var(--bg-card)' }}>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
-                <Trash2 size={20} className="text-rose-700" />
+              <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
+                <Trash2 size={20} className="text-rose-700 dark:text-rose-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">Delete Account?</h3>
+              <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Delete Account?</h3>
             </div>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
               This will permanently delete your account, all transactions, categories, goals, and uploaded images.{' '}
-              <strong className="text-rose-700">This cannot be undone.</strong>
+              <strong className="text-rose-700 dark:text-rose-400">This cannot be undone.</strong>
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium text-sm hover:bg-gray-50 transition"
+                className="flex-1 py-2.5 rounded-xl font-medium text-sm hover:bg-gray-50 dark:hover:bg-[#334155] transition"
+                style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
               >
                 Cancel
               </button>
@@ -335,8 +341,8 @@ export default function Profile() {
         onOpenChange={setToastOpen}
         className={`fixed bottom-6 right-6 z-50 flex flex-col gap-1 p-4 rounded-2xl shadow-lg border text-sm min-w-[280px] ${
           toastMsg.variant === 'error'
-            ? 'bg-rose-50 border-rose-200 text-rose-800'
-            : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+            ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-400'
+            : 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-400'
         }`}
         duration={3500}
       >

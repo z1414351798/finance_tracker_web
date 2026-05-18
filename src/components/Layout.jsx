@@ -3,13 +3,15 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, History as HistoryIcon, LogOut, PlusCircle,
   ChartNoAxesCombinedIcon, Maximize2Icon, Building2Icon, User, RefreshCw,
-  MoreHorizontal, Wallet, X
+  MoreHorizontal, Wallet, X, Moon, Sun
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [moreDrawerOpen, setMoreDrawerOpen] = useState(false);
+  const { dark, toggleDark } = useTheme();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -32,7 +34,7 @@ export default function Layout() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-[#0f172a]">
 
       {/* ═══════════════════════════════════
           Desktop sidebar  (lg and above)
@@ -71,6 +73,15 @@ export default function Layout() {
           {' · '}
           <Link to="/terms" className="hover:text-gray-300 transition">Terms</Link>
         </div>
+
+        {/* Dark mode toggle */}
+        <button
+          onClick={toggleDark}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-slate-800 transition-all duration-150 font-medium text-sm"
+        >
+          {dark ? <Sun size={20}/> : <Moon size={20}/>}
+          {dark ? 'Light Mode' : 'Dark Mode'}
+        </button>
 
         {/* Bottom: Profile + Logout */}
         <div className="space-y-1 pt-4 border-t border-slate-800">
@@ -114,8 +125,8 @@ export default function Layout() {
           left: 0,
           right: 0,
           zIndex: 9999,
-          backgroundColor: '#ffffff',
-          borderTop: '1px solid #e5e7eb',
+          backgroundColor: 'var(--nav-bg)',
+          borderTop: '1px solid var(--nav-border)',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
           boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
         }}
@@ -135,12 +146,12 @@ export default function Layout() {
                   gap: '3px',
                   fontSize: '10px',
                   fontWeight: '600',
-                  color: active ? '#2563eb' : '#9ca3af',
+                  color: active ? '#2563eb' : 'var(--text-muted)',
                   textDecoration: 'none',
                   transition: 'color 0.15s',
                 }}
               >
-                <span style={{ color: active ? '#2563eb' : '#9ca3af' }}>{item.icon}</span>
+                <span style={{ color: active ? '#2563eb' : 'var(--text-muted)' }}>{item.icon}</span>
                 <span>{item.name}</span>
               </Link>
             );
@@ -157,7 +168,7 @@ export default function Layout() {
               gap: '3px',
               fontSize: '10px',
               fontWeight: '600',
-              color: '#9ca3af',
+              color: 'var(--text-muted)',
               border: 'none',
               background: 'none',
               cursor: 'pointer',
@@ -190,7 +201,7 @@ export default function Layout() {
           right: 0,
           bottom: `calc(64px + env(safe-area-inset-bottom, 0px))`,
           zIndex: 9999,
-          backgroundColor: '#ffffff',
+          backgroundColor: 'var(--drawer-bg)',
           borderRadius: '24px 24px 0 0',
           boxShadow: '0 -8px 40px rgba(0,0,0,0.15)',
           transform: moreDrawerOpen ? 'translateY(0)' : 'translateY(calc(100% + 80px))',
@@ -198,9 +209,9 @@ export default function Layout() {
           visibility: moreDrawerOpen ? 'visible' : 'hidden',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 12px', borderBottom: '1px solid #f3f4f6' }}>
-          <span style={{ fontSize: '11px', fontWeight: '700', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.1em' }}>More</span>
-          <button onClick={() => setMoreDrawerOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 12px', borderBottom: '1px solid var(--nav-border)' }}>
+          <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>More</span>
+          <button onClick={() => setMoreDrawerOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
             <X size={20} />
           </button>
         </div>
@@ -208,10 +219,17 @@ export default function Layout() {
           <Link
             to="/profile"
             onClick={() => setMoreDrawerOpen(false)}
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', color: '#374151', fontWeight: '500', textDecoration: 'none' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', color: 'var(--text-primary)', fontWeight: '500', textDecoration: 'none' }}
           >
             <User size={20} color="#3b82f6" /> Profile
           </Link>
+          <button
+            onClick={() => { toggleDark(); }}
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', color: 'var(--text-primary)', fontWeight: '500', border: 'none', background: 'none', cursor: 'pointer', width: '100%' }}
+          >
+            {dark ? <Sun size={20} color="#f59e0b" /> : <Moon size={20} color="#6366f1" />}
+            {dark ? 'Light Mode' : 'Dark Mode'}
+          </button>
           <button
             onClick={() => { setMoreDrawerOpen(false); handleLogout(); }}
             style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '12px', color: '#ef4444', fontWeight: '500', border: 'none', background: 'none', cursor: 'pointer', width: '100%' }}

@@ -122,37 +122,37 @@ export default function Auth({ onLoginSuccess }) {
         </div>
 
         {/* ── Right panel — form ── */}
-        <div className="flex-1 flex items-center justify-center bg-white p-6 md:p-12">
+        <div className="flex-1 flex items-center justify-center bg-white dark:bg-[#0f172a] p-6 md:p-12">
           <div className="w-full max-w-sm">
             {/* Logo mark for mobile */}
             <div className="md:hidden flex justify-center mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-200">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-200 dark:shadow-blue-900/30">
                 <Wallet size={30} className="text-white" />
               </div>
             </div>
 
             {/* App icon circle for desktop form */}
             <div className="hidden md:flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-200">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-200 dark:shadow-blue-900/30">
                 <Wallet size={30} className="text-white" />
               </div>
             </div>
 
-            <h2 className="text-3xl font-black text-gray-900 text-center mb-1">
+            <h2 className="text-3xl font-black text-gray-900 dark:text-gray-100 text-center mb-1">
               {isLogin ? 'Welcome back' : 'Create account'}
             </h2>
-            <p className="text-gray-400 text-center text-sm mb-8">
+            <p className="text-gray-400 dark:text-gray-500 text-center text-sm mb-8">
               {isLogin ? 'Sign in to your account to continue' : 'Start tracking your finances today'}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Username field */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Username</label>
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">Username</label>
                 <div className="relative">
-                  <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                   <input
-                    className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-50 transition text-sm font-medium"
+                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-[#1e293b] border border-gray-200 dark:border-[#334155] rounded-xl outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-50 dark:focus:ring-blue-900/30 transition text-sm font-medium dark:text-gray-100"
                     placeholder="Enter your username"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
@@ -162,12 +162,12 @@ export default function Auth({ onLoginSuccess }) {
 
               {/* Password field */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Password</label>
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">Password</label>
                 <div className="relative">
-                  <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                   <input
                     type="password"
-                    className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-50 transition text-sm font-medium"
+                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-[#1e293b] border border-gray-200 dark:border-[#334155] rounded-xl outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-50 dark:focus:ring-blue-900/30 transition text-sm font-medium dark:text-gray-100"
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -184,7 +184,7 @@ export default function Auth({ onLoginSuccess }) {
                     id="privacy-consent"
                     className="mt-1 accent-blue-600"
                   />
-                  <label htmlFor="privacy-consent" className="text-xs text-gray-500">
+                  <label htmlFor="privacy-consent" className="text-xs text-gray-500 dark:text-gray-400">
                     I agree to the{' '}
                     <Link to="/terms" className="text-blue-600 hover:underline">Terms of Service</Link>
                     {' '}and{' '}
@@ -204,24 +204,23 @@ export default function Auth({ onLoginSuccess }) {
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-5">
-              <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-xs text-gray-400 font-semibold">or continue with</span>
-              <div className="flex-1 h-px bg-gray-200" />
+              <div className="flex-1 h-px bg-gray-200 dark:bg-[#334155]" />
+              <span className="text-xs text-gray-400 dark:text-gray-600 font-semibold">or continue with</span>
+              <div className="flex-1 h-px bg-gray-200 dark:bg-[#334155]" />
             </div>
 
             {/* Google login */}
-            <div className="flex justify-center">
+            <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => console.error('Google OAuth error')}
                 text={isLogin ? 'continue_with' : 'signup_with'}
                 shape="rectangular"
-                width="320"
               />
             </div>
 
             {/* Toggle */}
-            <p className="text-sm text-center mt-6 text-gray-500">
+            <p className="text-sm text-center mt-6 text-gray-500 dark:text-gray-400">
               {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
               <button
                 type="button"

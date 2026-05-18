@@ -59,10 +59,10 @@ export default function Dashboard() {
       {/* Header */}
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl md:text-3xl font-black text-gray-900">
+          <h1 className="text-xl md:text-3xl font-black text-gray-900 dark:text-gray-100">
             {getGreeting()}, {username}!
           </h1>
-          <p className="text-gray-400 text-sm mt-0.5">Here is what's happening with your money.</p>
+          <p className="text-gray-400 dark:text-slate-500 text-sm mt-0.5">Here is what's happening with your money.</p>
         </div>
         <Link
           to="/record"
@@ -99,9 +99,9 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Transactions */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+        <div className="lg:col-span-2 bg-white dark:bg-[#1e293b] p-6 rounded-3xl border border-gray-100 dark:border-[#334155] shadow-sm">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold">Recent Activity</h3>
+            <h3 className="text-xl font-bold dark:text-gray-100">Recent Activity</h3>
             <Link to="/history" className="text-blue-600 text-sm font-bold flex items-center gap-1 hover:underline">
               View All <ArrowRight size={16}/>
             </Link>
@@ -110,7 +110,7 @@ export default function Dashboard() {
             {recentTransactions.map(t => (
               <div
                 key={t.id}
-                className={`flex justify-between items-center p-4 rounded-2xl transition border-l-4 bg-gray-50/60 hover:bg-gray-100/60 ${
+                className={`flex justify-between items-center p-4 rounded-2xl transition border-l-4 bg-gray-50/60 dark:bg-[#334155]/40 hover:bg-gray-100/60 dark:hover:bg-[#334155]/70 ${
                   t.type === 'INCOME' ? 'border-emerald-400' : 'border-rose-400'
                 }`}
               >
@@ -119,8 +119,8 @@ export default function Dashboard() {
                     {t.type === 'INCOME' ? <ArrowUpCircle size={18}/> : <ArrowDownCircle size={18}/>}
                   </div>
                   <div>
-                    <p className="font-bold text-gray-800 text-sm">{t.text}</p>
-                    <p className="text-xs text-gray-400">{t.category} • {t.date}</p>
+                    <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">{t.text}</p>
+                    <p className="text-xs text-gray-400 dark:text-slate-500">{t.category} • {t.date}</p>
                   </div>
                 </div>
                 <p className={`font-black text-sm ${t.type === 'INCOME' ? 'text-emerald-600' : 'text-rose-500'}`}>
@@ -129,7 +129,7 @@ export default function Dashboard() {
               </div>
             ))}
             {recentTransactions.length === 0 && (
-              <p className="text-center py-10 text-gray-400 italic">No recent transactions.</p>
+              <p className="text-center py-10 text-gray-400 dark:text-slate-500 italic">No recent transactions.</p>
             )}
           </div>
         </div>

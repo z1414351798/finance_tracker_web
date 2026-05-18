@@ -199,7 +199,7 @@ export default function History() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
 
       {/* Lightbox Modal */}
       {lightboxUrl && (
@@ -222,11 +222,11 @@ export default function History() {
       {/* Delete Confirm Dialog */}
       {confirmDeleteId && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm space-y-4">
-            <h3 className="text-lg font-bold text-gray-800">Delete Transaction?</h3>
-            <p className="text-sm text-gray-500">This action cannot be undone.</p>
+          <div className="rounded-3xl shadow-xl p-8 w-full max-w-sm space-y-4" style={{ backgroundColor: 'var(--bg-card)' }}>
+            <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Delete Transaction?</h3>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>This action cannot be undone.</p>
             <div className="flex gap-3 justify-end pt-2">
-              <button onClick={() => setConfirmDeleteId(null)} className="px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium">Cancel</button>
+              <button onClick={() => setConfirmDeleteId(null)} className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-[#334155] text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-[#475569] text-sm font-medium">Cancel</button>
               <button onClick={() => handleDelete(confirmDeleteId)} className="px-4 py-2 rounded-xl bg-rose-500 text-white hover:bg-rose-600 text-sm font-medium">Delete</button>
             </div>
           </div>
@@ -234,10 +234,10 @@ export default function History() {
       )}
 
       {/* FILTER PANEL */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-3xl shadow-sm border border-blue-100 space-y-4 md:space-y-6">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-[#1e293b] dark:to-[#1e293b] p-4 md:p-6 rounded-3xl shadow-sm border border-blue-100 dark:border-[#334155] space-y-4 md:space-y-6">
         {/* Header row — always visible */}
-        <div className="flex items-center justify-between border-b border-blue-100 pb-4">
-          <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
+        <div className="flex items-center justify-between border-b border-blue-100 dark:border-[#334155] pb-4">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800 dark:text-gray-100">
             <Filter size={20} className="text-blue-600" /> Advanced Search
           </h2>
           <div className="flex items-center gap-3">
@@ -259,19 +259,19 @@ export default function History() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Keyword */}
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Keyword</label>
+              <label className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase ml-1">Keyword</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16}/>
-                <input name="text" value={filters.text} onChange={handleFilterChange} placeholder="Description..." className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition" />
+                <input name="text" value={filters.text} onChange={handleFilterChange} placeholder="Description..." className="w-full pl-9 pr-4 py-2 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }} />
               </div>
             </div>
 
             {/* Category Dropdown */}
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Category</label>
+              <label className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase ml-1">Category</label>
               <div className="relative">
                 <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16}/>
-                <select name="categoryId" value={filters.categoryId} onChange={handleFilterChange} className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition appearance-none">
+                <select name="categoryId" value={filters.categoryId} onChange={handleFilterChange} className="w-full pl-9 pr-4 py-2 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition appearance-none dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}>
                   <option value="">All Categories</option>
                   {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                 </select>
@@ -280,8 +280,8 @@ export default function History() {
 
             {/* Type Selector */}
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Type</label>
-              <select name="type" value={filters.type} onChange={handleFilterChange} className="w-full px-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition">
+              <label className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase ml-1">Type</label>
+              <select name="type" value={filters.type} onChange={handleFilterChange} className="w-full px-4 py-2 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }}>
                 <option value="">All Types</option>
                 <option value="INCOME">Income (+)</option>
                 <option value="EXPENSE">Expense (-)</option>
@@ -290,29 +290,29 @@ export default function History() {
 
             {/* Notes Search */}
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Notes</label>
+              <label className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase ml-1">Notes</label>
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16}/>
-                <input name="note" value={filters.note} onChange={handleFilterChange} placeholder="Search notes..." className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition" />
+                <input name="note" value={filters.note} onChange={handleFilterChange} placeholder="Search notes..." className="w-full pl-9 pr-4 py-2 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none transition dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }} />
               </div>
             </div>
 
             {/* Amount Range */}
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Amount ($)</label>
+              <label className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase ml-1">Amount ($)</label>
               <div className="flex items-center gap-2">
-                <input type="number" name="minAmount" placeholder="Min" value={filters.minAmount} onChange={handleFilterChange} className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100" />
-                <input type="number" name="maxAmount" placeholder="Max" value={filters.maxAmount} onChange={handleFilterChange} className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100" />
+                <input type="number" name="minAmount" placeholder="Min" value={filters.minAmount} onChange={handleFilterChange} className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }} />
+                <input type="number" name="maxAmount" placeholder="Max" value={filters.maxAmount} onChange={handleFilterChange} className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }} />
               </div>
             </div>
 
             {/* Date Range */}
             <div className="lg:col-span-2 space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Date Range</label>
+              <label className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase ml-1">Date Range</label>
               <div className="flex items-center gap-2">
-                <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100" />
-                <span className="text-gray-300">to</span>
-                <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="w-full px-3 py-2 bg-gray-50 border border-transparent rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100" />
+                <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }} />
+                <span className="text-gray-300 dark:text-slate-600">to</span>
+                <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-100" style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)' }} />
               </div>
             </div>
           </div>
@@ -320,11 +320,11 @@ export default function History() {
       </div>
 
       {/* DATA TABLE — desktop only */}
-      <div className="hidden md:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="hidden md:block rounded-3xl shadow-sm overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-gray-50 to-slate-50 border-b border-gray-100 text-gray-400 uppercase tracking-widest text-[10px] font-bold">
+              <tr className="border-b text-gray-400 dark:text-slate-500 uppercase tracking-widest text-[10px] font-bold" style={{ backgroundColor: 'var(--bg-card-hover)', borderColor: 'var(--border)' }}>
                 <th className="p-5">Date</th>
                 <th className="p-5">Transaction / Notes</th>
                 <th className="p-5">Category</th>
@@ -333,21 +333,21 @@ export default function History() {
                 <th className="p-5 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody style={{ borderColor: 'var(--border)' }}>
               {data.length > 0 ? data.map(row => (
-                <tr key={row.id} className="hover:bg-blue-50/10 transition-colors">
+                <tr key={row.id} className="hover:bg-blue-50/10 dark:hover:bg-blue-900/10 transition-colors border-b" style={{ borderColor: 'var(--border)' }}>
                   {editingId === row.id ? (
                     // --- EDIT MODE ROW ---
                     <>
                       <td className="p-4">
-                        <input type="date" name="date" value={editFormData.date} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-100" />
+                        <input type="date" name="date" value={editFormData.date} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-100 dark:bg-[#1e293b] dark:text-gray-100" />
                       </td>
                       <td className="p-4 space-y-2">
-                        <input type="text" name="text" value={editFormData.text} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none" />
-                        <input type="text" name="note" value={editFormData.note} onChange={handleEditChange} placeholder="Notes..." className="w-full p-2 border border-blue-100 rounded-lg text-xs outline-none text-gray-500" />
+                        <input type="text" name="text" value={editFormData.text} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm outline-none dark:bg-[#1e293b] dark:text-gray-100" />
+                        <input type="text" name="note" value={editFormData.note} onChange={handleEditChange} placeholder="Notes..." className="w-full p-2 border border-blue-100 dark:border-blue-900 rounded-lg text-xs outline-none text-gray-500 dark:bg-[#1e293b] dark:text-slate-400" />
                       </td>
                       <td className="p-4">
-                        <select name="categoryId" value={editFormData.categoryId} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none">
+                        <select name="categoryId" value={editFormData.categoryId} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm outline-none dark:bg-[#1e293b] dark:text-gray-100">
                           {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                         </select>
                       </td>
@@ -372,7 +372,7 @@ export default function History() {
                         </label>
                       </td>
                       <td className="p-4">
-                        <input type="number" name="amount" value={editFormData.amount} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm text-right outline-none" />
+                        <input type="number" name="amount" value={editFormData.amount} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-right outline-none dark:bg-[#1e293b] dark:text-gray-100" />
                       </td>
                       <td className="p-4 text-center">
                         <div className="flex justify-center gap-2">
@@ -384,13 +384,13 @@ export default function History() {
                   ) : (
                     // --- VIEW MODE ROW ---
                     <>
-                      <td className="p-5 text-sm text-gray-500 whitespace-nowrap">{new Date(row.date).toLocaleDateString()}</td>
+                      <td className="p-5 text-sm whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>{new Date(row.date).toLocaleDateString()}</td>
                       <td className="p-5">
-                        <div className="font-semibold text-gray-800">{row.text}</div>
-                        {row.note && <div className="text-xs text-gray-400 italic mt-1">"{row.note}"</div>}
+                        <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{row.text}</div>
+                        {row.note && <div className="text-xs italic mt-1" style={{ color: 'var(--text-muted)' }}>"{row.note}"</div>}
                       </td>
                       <td className="p-5">
-                        <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">
+                        <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
                           {row.categoryName || 'General'}
                         </span>
                       </td>
@@ -400,11 +400,12 @@ export default function History() {
                             <img
                               src={row.imagePresignedUrl || row.imageUrl}
                               alt="Receipt"
-                              className="w-10 h-10 object-cover rounded-lg border border-gray-200 hover:opacity-80 transition"
+                              className="w-10 h-10 object-cover rounded-lg hover:opacity-80 transition"
+                              style={{ border: '1px solid var(--border)' }}
                             />
                           </button>
                         ) : (
-                          <span className="text-gray-200"><ImageIcon size={18} /></span>
+                          <span style={{ color: 'var(--border)' }}><ImageIcon size={18} /></span>
                         )}
                       </td>
                       <td className={`p-5 text-right font-mono font-bold ${row.amount < 0 ? 'text-rose-500' : 'text-emerald-600'}`}>
@@ -424,27 +425,27 @@ export default function History() {
                   )}
                 </tr>
               )) : (
-                <tr><td colSpan={6} className="p-20 text-center text-gray-400 italic">No matches found.</td></tr>
+                <tr><td colSpan={6} className="p-20 text-center italic" style={{ color: 'var(--text-muted)' }}>No matches found.</td></tr>
               )}
             </tbody>
           </table>
         </div>
 
         {/* PAGINATION */}
-        <div className="p-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+        <div className="p-4 border-t flex items-center justify-between" style={{ backgroundColor: 'var(--bg-card-hover)', borderColor: 'var(--border)' }}>
           <div className="flex items-center gap-3">
-            <p className="text-xs text-gray-400 font-bold uppercase ml-2 tracking-widest">Total: {totalRows}</p>
+            <p className="text-xs font-bold uppercase ml-2 tracking-widest" style={{ color: 'var(--text-muted)' }}>Total: {totalRows}</p>
             <button
               onClick={handleExportCsv}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition"
             >
               <Download size={13}/> Export CSV
             </button>
           </div>
           <div className="flex gap-2">
-            <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronLeft size={18}/></button>
-            <div className="flex items-center px-4 text-xs font-bold text-gray-500 uppercase tracking-tighter">Page {page + 1} / {totalPages || 1}</div>
-            <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronRight size={18}/></button>
+            <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl hover:bg-gray-50 dark:hover:bg-[#334155] disabled:opacity-30 shadow-sm transition dark:text-gray-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}><ChevronLeft size={18}/></button>
+            <div className="flex items-center px-4 text-xs font-bold uppercase tracking-tighter" style={{ color: 'var(--text-secondary)' }}>Page {page + 1} / {totalPages || 1}</div>
+            <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="p-2 border rounded-xl hover:bg-gray-50 dark:hover:bg-[#334155] disabled:opacity-30 shadow-sm transition dark:text-gray-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}><ChevronRight size={18}/></button>
           </div>
         </div>
       </div>
@@ -452,17 +453,17 @@ export default function History() {
       {/* MOBILE CARD LIST */}
       <div className="md:hidden space-y-3">
         {data.length > 0 ? data.map(row => (
-          <div key={row.id} className={`rounded-2xl shadow-sm border overflow-hidden ${editingId === row.id ? 'bg-white border-gray-100 p-4 space-y-3' : flippedCards.has(row.id) ? 'border-slate-700' : 'bg-white border-gray-100 p-4'}`}>
+          <div key={row.id} className={`rounded-2xl shadow-sm overflow-hidden ${editingId === row.id ? 'p-4 space-y-3' : flippedCards.has(row.id) ? 'border-slate-700' : 'p-4'}`} style={{ backgroundColor: editingId === row.id ? 'var(--bg-card)' : flippedCards.has(row.id) ? undefined : 'var(--bg-card)', border: flippedCards.has(row.id) ? '1px solid #334155' : '1px solid var(--border)' }}>
             {editingId === row.id ? (
               // Mobile edit form
               <div className="space-y-3">
-                <input type="date" name="date" value={editFormData.date} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none" />
-                <input type="text" name="text" value={editFormData.text} onChange={handleEditChange} placeholder="Description" className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none" />
-                <input type="text" name="note" value={editFormData.note} onChange={handleEditChange} placeholder="Notes..." className="w-full p-2 border border-blue-100 rounded-lg text-xs outline-none text-gray-500" />
-                <select name="categoryId" value={editFormData.categoryId} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm outline-none">
+                <input type="date" name="date" value={editFormData.date} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm outline-none dark:bg-[#1e293b] dark:text-gray-100" />
+                <input type="text" name="text" value={editFormData.text} onChange={handleEditChange} placeholder="Description" className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm outline-none dark:bg-[#1e293b] dark:text-gray-100" />
+                <input type="text" name="note" value={editFormData.note} onChange={handleEditChange} placeholder="Notes..." className="w-full p-2 border border-blue-100 dark:border-blue-900 rounded-lg text-xs outline-none text-gray-500 dark:bg-[#1e293b] dark:text-slate-400" />
+                <select name="categoryId" value={editFormData.categoryId} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm outline-none dark:bg-[#1e293b] dark:text-gray-100">
                   {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                 </select>
-                <input type="number" name="amount" value={editFormData.amount} onChange={handleEditChange} className="w-full p-2 border border-blue-200 rounded-lg text-sm text-right outline-none" />
+                <input type="number" name="amount" value={editFormData.amount} onChange={handleEditChange} className="w-full p-2 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-right outline-none dark:bg-[#1e293b] dark:text-gray-100" />
                 <label className="cursor-pointer flex items-center gap-2 text-blue-500 text-sm">
                   <Upload size={16} />
                   <span>{uploadingId === row.id ? 'Uploading…' : 'Upload Receipt'}</span>
@@ -491,18 +492,18 @@ export default function History() {
                   <div style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-800 truncate">{row.text}</p>
-                        <p className="text-xs text-gray-400 mt-1">{new Date(row.date).toLocaleDateString()}</p>
+                        <p className="font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{row.text}</p>
+                        <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{new Date(row.date).toLocaleDateString()}</p>
                       </div>
                       <p className={`font-mono font-bold text-base whitespace-nowrap ${row.amount < 0 ? 'text-rose-500' : 'text-emerald-600'}`}>
                         {row.amount < 0 ? '-' : '+'}${Math.abs(row.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </p>
                     </div>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
                         {row.categoryName || 'General'}
                       </span>
-                      <span className="text-xs text-gray-300 flex items-center gap-1">
+                      <span className="text-xs flex items-center gap-1" style={{ color: 'var(--border)' }}>
                         {(row.imagePresignedUrl || row.imageUrl)
                           ? <ImageIcon size={13} className="text-blue-300" />
                           : <ImageIcon size={13} />}
@@ -569,23 +570,23 @@ export default function History() {
             )}
           </div>
         )) : (
-          <p className="text-center py-16 text-gray-400 italic">No matches found.</p>
+          <p className="text-center py-16 italic" style={{ color: 'var(--text-muted)' }}>No matches found.</p>
         )}
 
         {/* Mobile Pagination */}
         <div className="flex flex-col gap-2 pt-2">
           <button
             onClick={handleExportCsv}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold hover:bg-emerald-100 transition"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-sm font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition"
           >
             <Download size={15}/> Export All as CSV
           </button>
           <div className="flex items-center justify-between">
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Total: {totalRows}</p>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>Total: {totalRows}</p>
             <div className="flex gap-2 items-center">
-              <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronLeft size={18}/></button>
-              <span className="text-xs font-bold text-gray-500">{page + 1} / {totalPages || 1}</span>
-              <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="p-2 border rounded-xl bg-white hover:bg-gray-50 disabled:opacity-30 shadow-sm transition"><ChevronRight size={18}/></button>
+              <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="p-2 border rounded-xl hover:bg-gray-50 dark:hover:bg-[#334155] disabled:opacity-30 shadow-sm transition dark:text-gray-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}><ChevronLeft size={18}/></button>
+              <span className="text-xs font-bold" style={{ color: 'var(--text-secondary)' }}>{page + 1} / {totalPages || 1}</span>
+              <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="p-2 border rounded-xl hover:bg-gray-50 dark:hover:bg-[#334155] disabled:opacity-30 shadow-sm transition dark:text-gray-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}><ChevronRight size={18}/></button>
             </div>
           </div>
         </div>
